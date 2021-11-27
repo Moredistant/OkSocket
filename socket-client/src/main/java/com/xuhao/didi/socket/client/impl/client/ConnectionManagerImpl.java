@@ -125,6 +125,18 @@ public class ConnectionManagerImpl extends AbsConnectionManager {
         mConnectThread.start();
     }
 
+    public synchronized boolean connectSync() {
+        connect();
+        if (mConnectThread != null && mConnectThread.isAlive()) {
+            try {
+                mConnectThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return mSocket != null && mSocket.isConnected();
+    }
+
     private synchronized Socket getSocketByConfig() throws Exception {
         //自定义socket操作
         if (mOptions.getOkSocketFactory() != null) {
@@ -312,6 +324,17 @@ public class ConnectionManagerImpl extends AbsConnectionManager {
         }
     }
 
+
+    public void disconnectSync() {
+        disconnect();
+        while (isDisconnecting){
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     @Override
     public void disconnect() {
