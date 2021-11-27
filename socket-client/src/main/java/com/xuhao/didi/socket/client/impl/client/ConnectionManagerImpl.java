@@ -125,7 +125,7 @@ public class ConnectionManagerImpl extends AbsConnectionManager {
         mConnectThread.start();
     }
 
-    public synchronized boolean connectSync() {
+    public boolean connectSync() {
         connect();
         if (mConnectThread != null && mConnectThread.isAlive()) {
             try {
